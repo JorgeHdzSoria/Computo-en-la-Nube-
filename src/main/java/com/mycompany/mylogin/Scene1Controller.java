@@ -31,7 +31,7 @@ public class Scene1Controller {
             Cliente.username = username;
             Cliente.password = password;
             
-            Cliente.initializeClient();
+            //Cliente.initializeClient();
             
             /*if(Cliente.username != "" && Cliente.password != ""){
                     Cliente.initializeClient();   
@@ -40,7 +40,7 @@ public class Scene1Controller {
                     passwordTextField.setText("");
                 }*/
             
-            Cliente.initializeChat(Cliente.dis, Cliente.dos);
+            //Cliente.initializeChat(Cliente.dis, Cliente.dos);
             
             stage = (Stage)((Node)e.getSource()).getScene().getWindow();
             
@@ -58,9 +58,11 @@ public class Scene1Controller {
         
         Scene2Controller scene2Controller = loader.getController();
         
+        scene2Controller.setUser("Test");
+        
         Cliente.scene2 = scene2Controller;
         
-        scene2Controller.getPosition(cliente);
+        //scene2Controller.getPosition(cliente);
                 
         //scene2Controller.displayName(username, Cliente.dis, Cliente.dos);
 

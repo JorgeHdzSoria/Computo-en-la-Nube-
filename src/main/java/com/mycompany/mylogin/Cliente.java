@@ -84,7 +84,7 @@ public class Cliente extends Thread {
     
     public static void initializeClient(){
         try {
-            InetAddress ip = InetAddress.getByName("192.168.1.11"); // 10.103.160.205 -> Servidor en la nube
+            InetAddress ip = InetAddress.getByName("10.103.160.205"); // 10.103.160.205 -> Servidor en la nube
             socket = new Socket(ip, 2555);
             
             dis = new DataInputStream(socket.getInputStream());
