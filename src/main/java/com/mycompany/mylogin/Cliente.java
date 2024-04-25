@@ -29,7 +29,6 @@ class Sender extends Thread {
                     }
                     break;
                 }
-                
             }
         } catch (Exception e) {
             System.out.println("Error al enviar el mensaje");
@@ -53,9 +52,16 @@ class Listener extends Thread {
                 if (received.equals("VAS")) {
                     Thread.sleep(1000);
                 }
+                if (received.contains("LISTA DE UBICACIONES")) {
+                    System.out.println("Recibi una lista");
+                    Cliente.scene2.setUsers(received);
+                    Cliente.scene2.setPositions();
+                }
                 if (received.contains("JUG@RYA")) {
                     System.out.println("Nuevo jugador");
-                    Cliente.scene2.addTank();
+                }
+                if (received.contains("USER PROPIO")) {
+                    Cliente.scene2.setUser(received);
                 }
             }
         } catch (Exception e) {
@@ -78,7 +84,7 @@ public class Cliente extends Thread {
     
     public static void initializeClient(){
         try {
-            InetAddress ip = InetAddress.getByName("192.168.1.10"); // 10.103.160.205 -> Servidor en la nube
+            InetAddress ip = InetAddress.getByName("192.168.1.11"); // 10.103.160.205 -> Servidor en la nube
             socket = new Socket(ip, 2555);
             
             dis = new DataInputStream(socket.getInputStream());
@@ -109,6 +115,7 @@ public class Cliente extends Thread {
                 sesion = false;
             }
         } catch (Exception e) {
+            System.out.println(e);
             System.out.println("Error al validar las credenciaeles");
             //System.out.println("Client error: " + e);
         }
@@ -133,51 +140,6 @@ public class Cliente extends Thread {
             e.printStackTrace();
         }
     }
-
-    /*public static void main(String[] args) {
-        try {
-            InetAddress ip = InetAddress.getByName("192.168.1.10");
-            socket = new Socket(ip, 2555);
-            
-            dis = new DataInputStream(socket.getInputStream());
-            dos = new DataOutputStream(socket.getOutputStream());
-            
-            sesion = initializeSesion();
-
-            Thread listener = new Listener(dis);
-            Thread sender = new Sender(dos);
-
-            sender.start();
-            listener.start();
-
-            listener.join();
-            sender.join();
-            
-            socket.close();
-            
-            Scanner input = new Scanner(System.in);
-            // Si se quiere conectar la maquina virtual con un cliente fuera se debe conocer la 
-            // IP de la maquina virtual
-            InetAddress ip = InetAddress.getByName("localhost");
-            Socket socket = new Socket(ip,2555);
-            DataInputStream dis = new DataInputStream(socket.getInputStream());
-            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-            while(true){
-                System.out.println(dis.readUTF());
-                //System.out.println(ip);
-                String toSend = input.nextLine();
-                dos.writeUTF(toSend);
-                if(toSend.equals("Exit")){
-                    socket.close();
-                    dis.close();
-                    dos.close();
-                }
-            }
-             
-        } catch (Exception e) {
-            System.out.println("Client error: " + e);
-        }
-    }*/
     
     public static String getUser(){
         return (username + " " +password);
