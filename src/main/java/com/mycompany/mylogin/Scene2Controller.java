@@ -8,6 +8,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import javafx.animation.TranslateTransition;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
 
 class tanque{
     int X;
@@ -31,14 +34,19 @@ public class Scene2Controller {
     double posX = 0.0;
     double posY = 0.0;
     String username = "";
-    
+    int dir = 0;
     public static ImageView[] imageviewTanks;
     static LinkedHashMap<String, tanque> users = new LinkedHashMap<>();
     static LinkedHashMap<String, ImageView> tanks = new LinkedHashMap<>();
+    double width;
+    double height;
     
     @FXML
     public void initialize() {
         imageviewTanks = new ImageView[]{tank, tank2, tank3, tank4};
+        Screen primaryScreen = Screen.getPrimary();
+        width = primaryScreen.getVisualBounds().getWidth();
+        height = primaryScreen.getVisualBounds().getHeight();
     }
     
     public void getPosition(Cliente cliente) throws IOException{
@@ -162,26 +170,99 @@ public class Scene2Controller {
 
     public void moveUp(){
         ImageView myTank = tanks.get(username);
-        myTank.setY(myTank.getY() -10);
+        TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
+        TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
+        
+        if(dir == 3 || dir == 0 || dir == -1 || dir == -3)
+        {
+            //animacion para movimiento del tanque
+            translateT.setByY(-50);
+            translateT.setCycleCount(1);
+            translateT.setAutoReverse(true);
+            translateT.play();
+            
+            //animacion para movimiento del disparo
+            translateR.setByY(-50);
+            translateR.setCycleCount(1);
+            translateR.setAutoReverse(true);
+            translateR.play();
+        }
+        
+        //myTank.setY(myTank.getY() -10);
     }
     public void moveDown(){
         ImageView myTank = tanks.get(username);
-        myTank.setY(myTank.getY() +10);
+        TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
+        TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
+        
+        if(dir == 1 || dir == 3 || dir == -1 || dir == -3){
+             //animacion para movimiento del tanque
+            translateT.setByY(50);
+            translateT.setCycleCount(1);
+            translateT.setAutoReverse(true);
+            translateT.play();
+            
+            //animacion del movimiento del disparo
+            //rect1.setY(rect1.getY() - 10);
+            translateR.setByY(50f);
+            translateR.setCycleCount(1);
+            translateR.setAutoReverse(true);
+            translateR.play();
+        }
+        //myTank.setY(myTank.getY() +10);
         //rect1.setY(rect1.getY() + 10);
     }
     public void moveRight(){
         ImageView myTank = tanks.get(username);
-        myTank.setX(myTank.getX() +10);
+        TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
+        TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
+        
+        if(dir == 0 || dir == 2 || dir == -2){
+             //animacion para movimiento del tanque
+            translateT.setByX(50);
+            translateT.setCycleCount(1);
+            translateT.setAutoReverse(true);
+            translateT.play();
+            
+            //animacion del movimiento del disparo
+            //rect1.setY(rect1.getY() - 10);
+            translateR.setByX(50f);
+            translateR.setCycleCount(1);
+            translateR.setAutoReverse(true);
+            translateR.play();
+        }
+        //myTank.setX(myTank.getX() +10);
         //rect1.setX(rect1.getX() + 10);
     }
     public void moveLeft(){
         ImageView myTank = tanks.get(username);
-        myTank.setX(myTank.getX() -10);
+        TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
+        TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
+        
+        if(dir == 0 || dir == 2 || dir == -2){
+             //animacion para movimiento del tanque
+            translateT.setByX(-50);
+            translateT.setCycleCount(1);
+            translateT.setAutoReverse(true);
+            translateT.play();
+            
+            //animacion del movimiento del disparo
+            //rect1.setY(rect1.getY() - 10);
+            translateR.setByX(-50f);
+            translateR.setCycleCount(1);
+            translateR.setAutoReverse(true);
+            translateR.play();
+        }
+        
+        
+        //myTank.setX(myTank.getX() -10);
         //rect1.setX(rect1.getX() - 10);
     }
     public void rotateRight(){
         ImageView myTank = tanks.get(username);
         
+        dir+=1;
+        resetPosition();
         
         //rotacion con animacion
         RotateTransition rotacion = new RotateTransition();
@@ -196,6 +277,8 @@ public class Scene2Controller {
     public void rotateLeft(){
         ImageView myTank = tanks.get(username);
         
+        dir-=1;
+        resetPosition();
         
         //rotacion con animacion
         RotateTransition rotacion = new RotateTransition();
@@ -206,5 +289,81 @@ public class Scene2Controller {
         rotacion.setCycleCount(1);
         rotacion.setAutoReverse(false);
         rotacion.play();
+    }
+    
+    public void shot(){
+        TranslateTransition tt = new TranslateTransition(Duration.millis(1000),rect1);
+        
+        switch(dir)
+        {
+            case 0:
+                if(rect1.getLayoutX() < 0)
+                {
+                    tt.setByX(100f);
+                    tt.setCycleCount(1);
+                    tt.setAutoReverse(true);
+                    tt.play();
+                }
+                else
+                {
+                    System.out.println("Nos salimos de la pantalla");
+                }
+                break;
+            case 1:
+                tt.setByY(100f);
+                tt.setCycleCount(1);
+                tt.setAutoReverse(true);
+                tt.play();
+                break;
+            case 2:
+                tt.setByX(-100f);
+                tt.setCycleCount(1);
+                tt.setAutoReverse(true);
+                tt.play();
+                break;
+            case 3:
+                 tt.setByY(-100f);
+                tt.setCycleCount(1);
+                tt.setAutoReverse(true);
+                tt.play();
+                break;
+            case -1:
+                tt.setByY(-100f);
+                tt.setCycleCount(1);
+                tt.setAutoReverse(true);
+                tt.play();
+                break;
+            case -2:
+                 tt.setByX(-100f);
+                tt.setCycleCount(1);
+                tt.setAutoReverse(true);
+                tt.play();
+                break;
+            case -3:
+                tt.setByY(100f);
+                tt.setCycleCount(1);
+                tt.setAutoReverse(true);
+                tt.play();
+                break;
+            
+        }
+    }
+    
+    void resetPosition()
+    {
+        if(dir == 4 || dir == -4)
+        {
+            dir = 0;
+        }
+    }
+    
+    void obtenerPositionX()
+    {
+        double x = rect1.getTranslateX();
+    }
+    
+    void obtenerPositionY()
+    {
+        double y = rect1.getTranslateY();
     }
 }
