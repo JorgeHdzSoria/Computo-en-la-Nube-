@@ -45,17 +45,16 @@ import javafx.animation.Timeline;
         @FXML
         public void initialize() {
             imageviewTanks = new ImageView[]{tank, tank2, tank3, tank4};
-
+            obtenerPositionX();
+            obtenerPositionY();
             Platform.runLater(()-> {
                 primaryStage = (Stage) rect1.getScene().getWindow();
                 Scene scene = primaryStage.getScene();
-
                 width = scene.getWidth();
                 height = scene.getHeight();
                 System.out.println("Ancho de la escena: " + width);
                 System.out.println("Alto de la escena: " + height);
             });
-
         }
 
         public void getPosition(Cliente cliente) throws IOException{
@@ -84,6 +83,31 @@ import javafx.animation.Timeline;
                     tank.setVisible(true);
                 }
             }
+        }
+        
+        public void newUser(String X, String Y){
+            System.out.println("X:" + X);
+            System.out.println("Y:" + Y);
+            int position = X.indexOf(": ") + 1;
+
+            String username = X.substring(0, position - 1);
+            System.out.println(username);
+
+            String posX = X.substring(position + 1, X.length());
+            System.out.println(posX);
+
+            String posY = Y.substring(position + 1, Y.length());
+            System.out.println(posY);
+            
+            tanque temTank = new tanque();
+            temTank.X = Integer.parseInt(posX);
+            temTank.Y = Integer.parseInt(posY);
+            temTank.activo = true;
+            
+            System.out.println("USERS SIZE: " + users.size());
+            tanks.put(username ,imageviewTanks[users.size()]);
+            users.put(username, temTank);
+            this.setPositions();
         }
 
         public void setUser(String user){
@@ -200,6 +224,7 @@ import javafx.animation.Timeline;
             //myTank.setY(myTank.getY() -10);
         }
         public void moveDown(){
+            //Cliente.sendMessage("UP"); # Así se envia el mensaje
             ImageView myTank = tanks.get(username);
             TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
             TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
@@ -302,8 +327,7 @@ import javafx.animation.Timeline;
 
         public void shot(){
             TranslateTransition tt = new TranslateTransition(Duration.millis(1000),rect1);
-            obtenerPositionX();
-            obtenerPositionY();
+            
             switch(dir)
             {
                 case 0:

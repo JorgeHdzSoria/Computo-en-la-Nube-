@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.Stack;
 
 class Sender extends Thread {
 
@@ -39,6 +40,7 @@ class Sender extends Thread {
 class Listener extends Thread {
     public String received;
     final DataInputStream dis;
+    Stack<String> mensajes = new Stack<>();
 
     public Listener(DataInputStream dis) {
         this.dis = dis;
@@ -48,6 +50,7 @@ class Listener extends Thread {
         try {
             while (true) {
                 received = dis.readUTF();
+                this.historial_msg(received);
                 System.out.println(received);
                 if (received.equals("VAS")) {
                     Thread.sleep(1000);
@@ -66,6 +69,22 @@ class Listener extends Thread {
             }
         } catch (Exception e) {
             System.out.println(e);
+        }
+    }
+    
+    private void historial_msg(String msg){
+        System.out.println("MSG: " + msg);
+        if (this.mensajes.size() < 3) {
+            this.mensajes.push(msg);
+            if (msg.contains("JUG@RYA")) {
+                Cliente.scene2.newUser(this.mensajes.get(0), this.mensajes.get(1));
+            }
+        } else {
+            this.mensajes.remove(0);
+            this.mensajes.push(msg);
+            if (msg.contains("JUG@RYA")) {
+                Cliente.scene2.newUser(this.mensajes.get(0), this.mensajes.get(1));
+            }
         }
     }
 }
