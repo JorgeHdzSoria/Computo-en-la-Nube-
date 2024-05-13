@@ -79,11 +79,18 @@ class Listener extends Thread {
             if (msg.contains("JUG@RYA")) {
                 Cliente.scene2.newUser(this.mensajes.get(0), this.mensajes.get(1));
             }
+            if (msg.contains("UP") || msg.contains("DOWN") || msg.contains("RIGHT") || msg.contains("LEFT")
+                || msg.contains("ROT_RIGHT") || msg.contains("ROT_LEFT")) {
+                Cliente.scene2.moveUser(msg);
+            }
         } else {
             this.mensajes.remove(0);
             this.mensajes.push(msg);
             if (msg.contains("JUG@RYA")) {
                 Cliente.scene2.newUser(this.mensajes.get(0), this.mensajes.get(1));
+            }
+            if (msg.contains("UP") || msg.contains("DOWN") || msg.contains("RIGHT") || msg.contains("LEFT")) {
+                Cliente.scene2.moveUser(msg);
             }
         }
     }

@@ -45,8 +45,8 @@ import javafx.animation.Timeline;
         @FXML
         public void initialize() {
             imageviewTanks = new ImageView[]{tank, tank2, tank3, tank4};
-            obtenerPositionX();
-            obtenerPositionY();
+            //obtenerPositionX();
+            //obtenerPositionY();
             Platform.runLater(()-> {
                 primaryStage = (Stage) rect1.getScene().getWindow();
                 Scene scene = primaryStage.getScene();
@@ -83,6 +83,37 @@ import javafx.animation.Timeline;
                     tank.setVisible(true);
                 }
             }
+        }
+        
+        public void moveUser(String msg){
+            System.out.println("MOVUSR: " + msg);
+            int position = msg.indexOf(": ") + 1;
+            
+            String username = msg.substring(0, position - 1);
+            System.out.println(username);
+            
+            String move = msg.substring(position + 1, msg.length());
+            System.out.println(move);
+            
+            if(move.equals("UP")){
+                this.moveUp(username);
+            }
+            if(move.equals("DOWN")){
+                this.moveDown(username);
+            }
+            if(move.equals("RIGHT")){
+                this.moveRight(username);
+            }
+            if(move.equals("LEFT")){
+                this.moveLeft(username);
+            }
+            if(move.equals("ROT_RIGHT")){
+                this.rotateRight(username);
+            }
+            if(move.equals("ROT_LEFT")){
+                this.rotateLeft(username);
+            }
+                  
         }
         
         public void newUser(String X, String Y){
@@ -201,8 +232,8 @@ import javafx.animation.Timeline;
             }
         }
 
-        public void moveUp(){
-            ImageView myTank = tanks.get(username);
+        public void moveUp(String usr){
+            ImageView myTank = tanks.get(usr);
             TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
             TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
 
@@ -223,9 +254,8 @@ import javafx.animation.Timeline;
 
             //myTank.setY(myTank.getY() -10);
         }
-        public void moveDown(){
-            //Cliente.sendMessage("UP"); # Así se envia el mensaje
-            ImageView myTank = tanks.get(username);
+        public void moveDown(String usr){
+            ImageView myTank = tanks.get(usr);
             TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
             TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
 
@@ -246,8 +276,8 @@ import javafx.animation.Timeline;
             //myTank.setY(myTank.getY() +10);
             //rect1.setY(rect1.getY() + 10);
         }
-        public void moveRight(){
-            ImageView myTank = tanks.get(username);
+        public void moveRight(String usr){
+            ImageView myTank = tanks.get(usr);
             TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
             TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
 
@@ -268,8 +298,8 @@ import javafx.animation.Timeline;
             //myTank.setX(myTank.getX() +10);
             //rect1.setX(rect1.getX() + 10);
         }
-        public void moveLeft(){
-            ImageView myTank = tanks.get(username);
+        public void moveLeft(String usr){
+            ImageView myTank = tanks.get(usr);
             TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
             TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
 
@@ -292,8 +322,8 @@ import javafx.animation.Timeline;
             //myTank.setX(myTank.getX() -10);
             //rect1.setX(rect1.getX() - 10);
         }
-        public void rotateRight(){
-            ImageView myTank = tanks.get(username);
+        public void rotateRight(String usr){
+            ImageView myTank = tanks.get(usr);
 
             dir+=1;
             resetPosition();
@@ -308,8 +338,8 @@ import javafx.animation.Timeline;
             rotacion.setAutoReverse(false);
             rotacion.play();
         }
-        public void rotateLeft(){
-            ImageView myTank = tanks.get(username);
+        public void rotateLeft(String usr){
+            ImageView myTank = tanks.get(usr);
 
             dir-=1;
             resetPosition();
