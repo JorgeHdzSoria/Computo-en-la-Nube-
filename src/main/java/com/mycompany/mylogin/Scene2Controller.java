@@ -59,18 +59,15 @@ import javafx.animation.Timeline;
 
         public void getPosition(Cliente cliente) throws IOException{
             Cliente.sendMessage("JUG@RYA");
-
-            String X = Cliente.dis.readUTF();
-            String Y = Cliente.dis.readUTF();
-
-            posX = Double.parseDouble(X);
-            posY = Double.parseDouble(Y);
-
-            tank.setLayoutX(posX);
-            tank.setLayoutX(posY);
+            
+            System.out.println(users.size());
+            if(users.size() == 0){
+                
+            }
         }
 
         public void setPositions(){
+            System.out.println("USERS SIZE: " + users.size());
             for (String key : users.keySet()) {
                 System.out.println(key);
                 tanque info = users.get(key);
@@ -81,6 +78,8 @@ import javafx.animation.Timeline;
                     tank.setLayoutX(info.X);
                     tank.setLayoutY(info.Y);
                     tank.setVisible(true);
+                    System.out.println("TANK LX: " + tank.getLayoutX());
+                    System.out.println("TANK LY: " + tank.getLayoutY());
                 }
             }
         }
@@ -141,17 +140,23 @@ import javafx.animation.Timeline;
             this.setPositions();
         }
 
-        public void setUser(String user){
+        public void setUser(String user,String X, String Y){
             int position;
-            String first;
+            String name;
             tanque tank = new tanque();
             position = user.indexOf(": ") + 1;
 
-            first = user.substring(position + 1, user.length());
-            System.out.println(first);
-            username = first;
-            users.put(first, tank);
-            tanks.put(first, imageviewTanks[0]);
+            name = user.substring(position + 1, user.length());
+            System.out.println("USERNAME: " + name);
+            System.out.println("X: " + X);
+            System.out.println("Y: " + Y);
+            tank.X = Integer.parseInt(X);
+            tank.Y = Integer.parseInt(Y);
+            tank.activo = true;
+            username = name;
+            tanks.put(name ,imageviewTanks[users.size()]);
+            users.put(name, tank);
+            this.setPositions();
         }
 
         public void setUsers(String texto){
@@ -232,14 +237,14 @@ import javafx.animation.Timeline;
             }
         }
 
-        public void moveUp(String usr){
+        public int moveUp(String usr){
             ImageView myTank = tanks.get(usr);
             TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
             TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
 
             if(dir == 3 || dir == 1 || dir == -1 || dir == -3)
             {
-                //animacion para movimiento del tanque
+                //animacion para movimiento del tanque                
                 translateT.setByY(-50);
                 translateT.setCycleCount(1);
                 translateT.setAutoReverse(true);
@@ -250,11 +255,13 @@ import javafx.animation.Timeline;
                 translateR.setCycleCount(1);
                 translateR.setAutoReverse(true);
                 translateR.play();
+                return 1;
             }
+            return 0;
 
             //myTank.setY(myTank.getY() -10);
         }
-        public void moveDown(String usr){
+        public int moveDown(String usr){
             ImageView myTank = tanks.get(usr);
             TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
             TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
@@ -265,6 +272,7 @@ import javafx.animation.Timeline;
                 translateT.setCycleCount(1);
                 translateT.setAutoReverse(true);
                 translateT.play();
+               
 
                 //animacion del movimiento del disparo
                 //rect1.setY(rect1.getY() - 10);
@@ -272,11 +280,13 @@ import javafx.animation.Timeline;
                 translateR.setCycleCount(1);
                 translateR.setAutoReverse(true);
                 translateR.play();
+                return 1;
             }
+            return 0;
             //myTank.setY(myTank.getY() +10);
             //rect1.setY(rect1.getY() + 10);
         }
-        public void moveRight(String usr){
+        public int moveRight(String usr){
             ImageView myTank = tanks.get(usr);
             TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
             TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
@@ -294,11 +304,13 @@ import javafx.animation.Timeline;
                 translateR.setCycleCount(1);
                 translateR.setAutoReverse(true);
                 translateR.play();
+                return 1;
             }
+            return 0;
             //myTank.setX(myTank.getX() +10);
             //rect1.setX(rect1.getX() + 10);
         }
-        public void moveLeft(String usr){
+        public int moveLeft(String usr){
             ImageView myTank = tanks.get(usr);
             TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
             TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
@@ -316,8 +328,9 @@ import javafx.animation.Timeline;
                 translateR.setCycleCount(1);
                 translateR.setAutoReverse(true);
                 translateR.play();
+                return 1;
             }
-
+            return 0;
 
             //myTank.setX(myTank.getX() -10);
             //rect1.setX(rect1.getX() - 10);

@@ -51,20 +51,8 @@ class Listener extends Thread {
             while (true) {
                 received = dis.readUTF();
                 this.historial_msg(received);
-                System.out.println(received);
                 if (received.equals("VAS")) {
                     Thread.sleep(1000);
-                }
-                if (received.contains("LISTA DE UBICACIONES")) {
-                    System.out.println("Recibi una lista");
-                    Cliente.scene2.setUsers(received);
-                    Cliente.scene2.setPositions();
-                }
-                if (received.contains("JUG@RYA")) {
-                    System.out.println("Nuevo jugador");
-                }
-                if (received.contains("USER PROPIO")) {
-                    Cliente.scene2.setUser(received);
                 }
             }
         } catch (Exception e) {
@@ -73,15 +61,24 @@ class Listener extends Thread {
     }
     
     private void historial_msg(String msg){
-        System.out.println("MSG: " + msg);
+        System.out.println("MSG FROM SERVER: " + msg);
         if (this.mensajes.size() < 3) {
             this.mensajes.push(msg);
             if (msg.contains("JUG@RYA")) {
                 Cliente.scene2.newUser(this.mensajes.get(0), this.mensajes.get(1));
+                Cliente.scene2.setPositions();
             }
             if (msg.contains("UP") || msg.contains("DOWN") || msg.contains("RIGHT") || msg.contains("LEFT")
                 || msg.contains("ROT_RIGHT") || msg.contains("ROT_LEFT")) {
                 Cliente.scene2.moveUser(msg);
+            }
+            if (msg.contains("USER PROPIO")) {
+                Cliente.scene2.setUser(received,this.mensajes.get(0), this.mensajes.get(1));
+            }
+            if (msg.contains("LISTA DE UBICACIONES")) {
+                System.out.println("Recibi una lista");
+                Cliente.scene2.setUsers(received);
+                Cliente.scene2.setPositions();
             }
         } else {
             this.mensajes.remove(0);
@@ -91,6 +88,14 @@ class Listener extends Thread {
             }
             if (msg.contains("UP") || msg.contains("DOWN") || msg.contains("RIGHT") || msg.contains("LEFT")) {
                 Cliente.scene2.moveUser(msg);
+            }
+            if (msg.contains("USER PROPIO")) {
+                Cliente.scene2.setUser(received,this.mensajes.get(0), this.mensajes.get(1));
+            }
+            if (msg.contains("LISTA DE UBICACIONES")) {
+                System.out.println("Recibi una lista");
+                Cliente.scene2.setUsers(received);
+                Cliente.scene2.setPositions();
             }
         }
     }
@@ -110,7 +115,7 @@ public class Cliente extends Thread {
     
     public static void initializeClient(){
         try {
-            InetAddress ip = InetAddress.getByName("10.103.160.205"); // 10.103.160.205 -> Servidor en la nube
+            InetAddress ip = InetAddress.getByName("192.168.1.11"); // 10.103.160.205 -> Servidor en la nube
             socket = new Socket(ip, 2555);
             
             dis = new DataInputStream(socket.getInputStream());

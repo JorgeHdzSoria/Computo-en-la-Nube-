@@ -21,77 +21,81 @@ public class Scene1Controller {
     private Scene scene;
     private Parent root;
     private Cliente cliente;
-    
-    public void login(ActionEvent e){
-        try{
+    private long lastRotationTime = System.currentTimeMillis() - 1000; // Initialize to allow immediate rotation
+
+    public void login(ActionEvent e) {
+        try {
             cliente = new Cliente();
             String username = nameTextField.getText();
             String password = passwordTextField.getText();
-            
+
             Cliente.username = username;
             Cliente.password = password;
-            
+
             Cliente.initializeClient();
-            
-            /*if(Cliente.username != "" && Cliente.password != ""){
-                    Cliente.initializeClient();   
-                }else{
-                    nameTextField.setText("");
-                    passwordTextField.setText("");
-                }*/
-            
+
             Cliente.initializeChat(Cliente.dis, Cliente.dos);
             
-            stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-            
+            Cliente.sendMessage("JUG@RYA");
+
+            stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+
             this.moveTank(stage);
 
-        }catch(IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
-    
+
     public void moveTank(Stage stage) throws IOException {
-        
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Scene2.fxml"));
         root = loader.load();
-        
+
         Scene2Controller scene2Controller = loader.getController();
-        
-        //scene2Controller.setUser("Test");
-        
+
         Cliente.scene2 = scene2Controller;
-        
-        scene2Controller.getPosition(cliente);
-                
-        //scene2Controller.displayName(username, Cliente.dis, Cliente.dos);
 
         scene = new Scene(root);
         scene.setOnKeyPressed(ee -> {
             switch (ee.getCode()) {
                 case W:
-                    Cliente.sendMessage("UP");
-                    scene2Controller.moveUp(scene2Controller.username);
+                    int res = scene2Controller.moveUp(scene2Controller.username);
+                    if(res == 1){
+                        Cliente.sendMessage("UP");
+                    }
                     break;
                 case S:
-                    Cliente.sendMessage("DOWN");
-                    scene2Controller.moveDown(scene2Controller.username);
+                    res = scene2Controller.moveDown(scene2Controller.username);
+                    if(res == 1){
+                        Cliente.sendMessage("DOWN");
+                    }
                     break;
                 case D:
-                    Cliente.sendMessage("RIGHT");
-                    scene2Controller.moveRight(scene2Controller.username);
+                    res = scene2Controller.moveRight(scene2Controller.username);
+                    if(res == 1){
+                        Cliente.sendMessage("RIGHT");
+                    }
                     break;
                 case A:
-                    Cliente.sendMessage("LEFT");
-                    scene2Controller.moveLeft(scene2Controller.username);
+                    res = scene2Controller.moveLeft(scene2Controller.username);
+                    if(res == 1){
+                        Cliente.sendMessage("LEFT");
+                    }
                     break;
                 case RIGHT:
-                    Cliente.sendMessage("ROT_RIGHT");
-                    scene2Controller.rotateRight(scene2Controller.username);
-                    break;
                 case LEFT:
-                    Cliente.sendMessage("ROT_LEFT");
-                    scene2Controller.rotateLeft(scene2Controller.username);
+                    long now = System.currentTimeMillis();
+                    if (now - lastRotationTime >= 1000) {
+                        if (ee.getCode() == RIGHT) {
+                            Cliente.sendMessage("ROT_RIGHT");
+                            scene2Controller.rotateRight(scene2Controller.username);
+                        } else {
+                            Cliente.sendMessage("ROT_LEFT");
+                            scene2Controller.rotateLeft(scene2Controller.username);
+                        }
+                        lastRotationTime = now;
+                    }
                     break;
                 case SPACE:
                     scene2Controller.shot();
