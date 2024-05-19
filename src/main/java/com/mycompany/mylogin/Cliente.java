@@ -113,7 +113,7 @@ public class Cliente extends Thread {
     public static Boolean newUser = false;
     public static Scene2Controller scene2;
     
-    public static void initializeClient(){
+    static public String initializeClient(){
         try {
             InetAddress ip = InetAddress.getByName("192.168.1.11"); // 10.103.160.205 -> Servidor en la nube
             socket = new Socket(ip, 2555);
@@ -136,7 +136,9 @@ public class Cliente extends Thread {
             
             String respuesta = dis.readUTF();
             
-            if(respuesta.equals("exito")){
+            return respuesta;
+
+            /*if(respuesta.equals("exito")){
                 System.out.println("Sesion iniciada con exito");
                 sesion = true;
             }else{
@@ -144,12 +146,12 @@ public class Cliente extends Thread {
                 username = "";
                 password = "";
                 sesion = false;
-            }
+            }*/
         } catch (Exception e) {
             System.out.println(e);
             System.out.println("Error al validar las credenciaeles");
-            //System.out.println("Client error: " + e);
         }
+        return "Error al validar las credenciaeles";
     }
     
     public static void initializeChat(DataInputStream dis, DataOutputStream dos){

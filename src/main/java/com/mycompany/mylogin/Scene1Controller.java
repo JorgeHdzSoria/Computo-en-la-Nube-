@@ -11,6 +11,10 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import static javafx.scene.input.KeyCode.LEFT;
 import static javafx.scene.input.KeyCode.RIGHT;
+import javafx.concurrent.Task;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyEvent;
 
 public class Scene1Controller {
     @FXML
@@ -32,19 +36,30 @@ public class Scene1Controller {
             Cliente.username = username;
             Cliente.password = password;
 
-            Cliente.initializeClient();
-
-            Cliente.initializeChat(Cliente.dis, Cliente.dos);
-            
-            Cliente.sendMessage("JUG@RYA");
-
             stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-
-            this.moveTank(stage);
+            
+            Online(stage);
 
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+    
+    public void Online(Stage stage) throws IOException{
+        String respuesta = "A";
+        
+            if (!Cliente.password.isEmpty() && !Cliente.username.isEmpty()) {
+            respuesta = Cliente.initializeClient();
+            if (!respuesta.equals("exito")) {
+                Cliente.password = "";
+                Cliente.username = "";
+            }else if(respuesta.equals("exito")){
+                Cliente.sesion = true;
+                Cliente.initializeChat(Cliente.dis, Cliente.dos);
+                Cliente.sendMessage("JUG@RYA");
+                this.moveTank(stage);
+            }
+        }  
     }
 
     public void moveTank(Stage stage) throws IOException {
@@ -59,56 +74,64 @@ public class Scene1Controller {
         //Cliente.scene2.setUser("Test", "-50", "500");
 
         scene = new Scene(root);
-        scene.setOnKeyPressed(ee -> {
-            switch (ee.getCode()) {
-                case W:
-                    //Cliente.scene2.moveUser(Cliente.scene2.username + ": UP");
-                    //Cliente.sendMessage("UP");
-                    int res = scene2Controller.moveUp(scene2Controller.username);
-                    if(res == 1){
-                        Cliente.sendMessage("UP");
-                    }
-                    break;
-                case S:
-                    res = scene2Controller.moveDown(scene2Controller.username);
-                    if(res == 1){
-                        Cliente.sendMessage("DOWN");
-                    }
-                    break;
-                case D:
-                    res = scene2Controller.moveRight(scene2Controller.username);
-                    if(res == 1){
-                        Cliente.sendMessage("RIGHT");
-                    }
-                    break;
-                case A:
-                    res = scene2Controller.moveLeft(scene2Controller.username);
-                    if(res == 1){
-                        Cliente.sendMessage("LEFT");
-                    }
-                    break;
-                case RIGHT:
-                    long now = System.currentTimeMillis();
-                    if (now - lastRotationTime >= 1000) {
-                        res = scene2Controller.rotateRight(scene2Controller.username);
-                        if(res == 1){
-                            Cliente.sendMessage("ROT_RIGHT");
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent ee) {
+                switch (ee.getCode()) {
+                    case W:
+                        int res = scene2Controller.moveUp(scene2Controller.username);
+                        if(res == 1 && Cliente.sesion == true){
+                            Cliente.sendMessage("UP");
                         }
-                        lastRotationTime = now;
-                    }
-                case LEFT:
-                    now = System.currentTimeMillis();
-                    if (now - lastRotationTime >= 1000) {
-                        res = scene2Controller.rotateLeft(scene2Controller.username);
-                        if(res == 1){
-                            Cliente.sendMessage("ROT_LEFT");
+                        break;
+                    case S:
+                        res = scene2Controller.moveDown(scene2Controller.username);
+                        if(res == 1 && Cliente.sesion == true){
+                            Cliente.sendMessage("DOWN");
                         }
-                        lastRotationTime = now;
-                    }
-                    break;
-                case SPACE:
-                    scene2Controller.shot(scene2Controller.username);
-                    break;
+                        break;
+                    case D:
+                        res = scene2Controller.moveRight(scene2Controller.username);
+                        if(res == 1 && Cliente.sesion == true){
+                            Cliente.sendMessage("RIGHT");
+                        }
+                        break;
+                    case A:
+                        res = scene2Controller.moveLeft(scene2Controller.username);
+                        if(res == 1 && Cliente.sesion == true){
+                            Cliente.sendMessage("LEFT");
+                        }
+                        break;
+                    case RIGHT:
+                        long now = System.currentTimeMillis();
+                        if (now - lastRotationTime >= 1000) {
+                            res = scene2Controller.rotateRight(scene2Controller.username);
+                            if(res == 1 && Cliente.sesion == true){
+                                Cliente.sendMessage("ROT_RIGHT");
+                            }
+                            lastRotationTime = now;
+                        }
+                    case LEFT:
+                        now = System.currentTimeMillis();
+                        if (now - lastRotationTime >= 1000) {
+                            res = scene2Controller.rotateLeft(scene2Controller.username);
+                            if(res == 1 && Cliente.sesion == true){
+                                Cliente.sendMessage("ROT_LEFT");
+                            }
+                            lastRotationTime = now;
+                        }
+                        break;
+                    case SPACE:
+                        scene2Controller.shot(scene2Controller.username);
+                        break;
+                    case ESCAPE:
+                        System.out.println("Cerrando la aplicación...");
+                        if (Cliente.sesion == true) {
+                            Cliente.sendMessage("Exit");
+                        }
+                        System.exit(0);
+                        break;
+                }
             }
         });
 
