@@ -55,11 +55,15 @@ public class Scene1Controller {
         Scene2Controller scene2Controller = loader.getController();
 
         Cliente.scene2 = scene2Controller;
+        
+        //Cliente.scene2.setUser("Test", "-50", "500");
 
         scene = new Scene(root);
         scene.setOnKeyPressed(ee -> {
             switch (ee.getCode()) {
                 case W:
+                    //Cliente.scene2.moveUser(Cliente.scene2.username + ": UP");
+                    //Cliente.sendMessage("UP");
                     int res = scene2Controller.moveUp(scene2Controller.username);
                     if(res == 1){
                         Cliente.sendMessage("UP");
@@ -84,21 +88,26 @@ public class Scene1Controller {
                     }
                     break;
                 case RIGHT:
-                case LEFT:
                     long now = System.currentTimeMillis();
                     if (now - lastRotationTime >= 1000) {
-                        if (ee.getCode() == RIGHT) {
+                        res = scene2Controller.rotateRight(scene2Controller.username);
+                        if(res == 1){
                             Cliente.sendMessage("ROT_RIGHT");
-                            scene2Controller.rotateRight(scene2Controller.username);
-                        } else {
+                        }
+                        lastRotationTime = now;
+                    }
+                case LEFT:
+                    now = System.currentTimeMillis();
+                    if (now - lastRotationTime >= 1000) {
+                        res = scene2Controller.rotateLeft(scene2Controller.username);
+                        if(res == 1){
                             Cliente.sendMessage("ROT_LEFT");
-                            scene2Controller.rotateLeft(scene2Controller.username);
                         }
                         lastRotationTime = now;
                     }
                     break;
                 case SPACE:
-                    scene2Controller.shot();
+                    scene2Controller.shot(scene2Controller.username);
                     break;
             }
         });

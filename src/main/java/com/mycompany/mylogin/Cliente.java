@@ -53,7 +53,7 @@ class Listener extends Thread {
                 this.historial_msg(received);
                 if (received.equals("VAS")) {
                     Thread.sleep(1000);
-                }
+                } 
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -68,8 +68,8 @@ class Listener extends Thread {
                 Cliente.scene2.newUser(this.mensajes.get(0), this.mensajes.get(1));
                 Cliente.scene2.setPositions();
             }
-            if (msg.contains("UP") || msg.contains("DOWN") || msg.contains("RIGHT") || msg.contains("LEFT")
-                || msg.contains("ROT_RIGHT") || msg.contains("ROT_LEFT")) {
+            if (msg.contains("UP") || msg.contains("DOWN") || msg.contains("RIGHT") || msg.contains("LEFT")){
+                //|| msg.contains("ROT_RIGHT") || msg.contains("ROT_LEFT")) {
                 Cliente.scene2.moveUser(msg);
             }
             if (msg.contains("USER PROPIO")) {

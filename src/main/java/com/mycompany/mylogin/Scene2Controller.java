@@ -15,9 +15,12 @@ import javafx.animation.Timeline;
     import javafx.application.Platform;
 
     class tanque{
+        String username;
         int X;
         int Y;
         boolean activo;
+        ImageView myTank;
+        int dir;
     }
 
     public class Scene2Controller {
@@ -31,10 +34,9 @@ import javafx.animation.Timeline;
         ImageView tank3;
         @FXML
         ImageView tank4;
-        double posX = 0.0;
-        double posY = 0.0;
+
         String username = "";
-        int dir = 0;
+
         public static ImageView[] imageviewTanks;
         static LinkedHashMap<String, tanque> users = new LinkedHashMap<>();
         static LinkedHashMap<String, ImageView> tanks = new LinkedHashMap<>();
@@ -45,8 +47,6 @@ import javafx.animation.Timeline;
         @FXML
         public void initialize() {
             imageviewTanks = new ImageView[]{tank, tank2, tank3, tank4};
-            //obtenerPositionX();
-            //obtenerPositionY();
             Platform.runLater(()-> {
                 primaryStage = (Stage) rect1.getScene().getWindow();
                 Scene scene = primaryStage.getScene();
@@ -94,25 +94,26 @@ import javafx.animation.Timeline;
             String move = msg.substring(position + 1, msg.length());
             System.out.println(move);
             
-            if(move.equals("UP")){
-                this.moveUp(username);
+            if(username != this.username){
+                if(move.equals("UP")){
+                    this.moveUp(username);
+                }
+                if(move.equals("DOWN")){
+                    this.moveDown(username);
+                }
+                if(move.equals("RIGHT")){
+                    this.moveRight(username);
+                }
+                if(move.equals("LEFT")){
+                    this.moveLeft(username);
+                }
+                if(move.equals("ROT_RIGHT")){
+                    this.rotateRight(username);
+                }
+                if(move.equals("ROT_LEFT")){
+                    this.rotateLeft(username);
+                }
             }
-            if(move.equals("DOWN")){
-                this.moveDown(username);
-            }
-            if(move.equals("RIGHT")){
-                this.moveRight(username);
-            }
-            if(move.equals("LEFT")){
-                this.moveLeft(username);
-            }
-            if(move.equals("ROT_RIGHT")){
-                this.rotateRight(username);
-            }
-            if(move.equals("ROT_LEFT")){
-                this.rotateLeft(username);
-            }
-                  
         }
         
         public void newUser(String X, String Y){
@@ -132,7 +133,10 @@ import javafx.animation.Timeline;
             tanque temTank = new tanque();
             temTank.X = Integer.parseInt(posX);
             temTank.Y = Integer.parseInt(posY);
+            temTank.username = username;
             temTank.activo = true;
+            temTank.myTank = imageviewTanks[users.size()];
+            temTank.dir = 0;
             
             System.out.println("USERS SIZE: " + users.size());
             tanks.put(username ,imageviewTanks[users.size()]);
@@ -152,7 +156,11 @@ import javafx.animation.Timeline;
             System.out.println("Y: " + Y);
             tank.X = Integer.parseInt(X);
             tank.Y = Integer.parseInt(Y);
+            tank.username = name;
             tank.activo = true;
+            tank.myTank = imageviewTanks[users.size()];
+            tank.dir = 0;
+            
             username = name;
             tanks.put(name ,imageviewTanks[users.size()]);
             users.put(name, tank);
@@ -221,11 +229,16 @@ import javafx.animation.Timeline;
 
                 first = texto.substring(position + 1, texto.length());
                 System.out.println(first);
-
+                temTank.username = first;
+                
+                temTank.myTank = imageviewTanks[index];
+                temTank.dir = 0;
+                        
                 if(first.equals("none")){
                     break;
                 }else{
                     if(users.get(first) == null){
+                        
                         users.put(first, temTank);
                         tanks.put(first,imageviewTanks[index]);
                     }else{
@@ -238,11 +251,13 @@ import javafx.animation.Timeline;
         }
 
         public int moveUp(String usr){
-            ImageView myTank = tanks.get(usr);
-            TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
+            System.out.println("Up: " + usr);
+
+            tanque tank = users.get(usr);
+            TranslateTransition translateT = new TranslateTransition(Duration.millis(500),tank.myTank);
             TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
 
-            if(dir == 3 || dir == 1 || dir == -1 || dir == -3)
+            if(tank.dir == 3 || tank.dir == 1 || tank.dir == -1 || tank.dir == -3)
             {
                 //animacion para movimiento del tanque                
                 translateT.setByY(-50);
@@ -261,12 +276,15 @@ import javafx.animation.Timeline;
 
             //myTank.setY(myTank.getY() -10);
         }
+        
         public int moveDown(String usr){
-            ImageView myTank = tanks.get(usr);
-            TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
+            System.out.println("Down: " + usr);
+
+            tanque tank = users.get(usr);
+            TranslateTransition translateT = new TranslateTransition(Duration.millis(500),tank.myTank);
             TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
 
-            if(dir == 1 || dir == 3 || dir == -1 || dir == -3){
+            if(tank.dir == 1 || tank.dir == 3 || tank.dir == -1 || tank.dir == -3){
                  //animacion para movimiento del tanque
                 translateT.setByY(50);
                 translateT.setCycleCount(1);
@@ -286,12 +304,15 @@ import javafx.animation.Timeline;
             //myTank.setY(myTank.getY() +10);
             //rect1.setY(rect1.getY() + 10);
         }
+        
         public int moveRight(String usr){
-            ImageView myTank = tanks.get(usr);
-            TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
+            System.out.println("Right: " + usr);
+
+            tanque tank = users.get(usr);
+            TranslateTransition translateT = new TranslateTransition(Duration.millis(500),tank.myTank);
             TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
 
-            if(dir == 0 || dir == 2 || dir == -2){
+            if(tank.dir == 0 || tank.dir == 2 || tank.dir == -2){
                  //animacion para movimiento del tanque
                 translateT.setByX(50);
                 translateT.setCycleCount(1);
@@ -310,12 +331,16 @@ import javafx.animation.Timeline;
             //myTank.setX(myTank.getX() +10);
             //rect1.setX(rect1.getX() + 10);
         }
+        
         public int moveLeft(String usr){
-            ImageView myTank = tanks.get(usr);
-            TranslateTransition translateT = new TranslateTransition(Duration.millis(500),myTank);
+            System.out.println("Left: " + usr);
+
+            tanque tank = users.get(usr);
+            
+            TranslateTransition translateT = new TranslateTransition(Duration.millis(500),tank.myTank);
             TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
 
-            if(dir == 0 || dir == 2 || dir == -2){
+            if(tank.dir == 0 || tank.dir == 2 || tank.dir == -2){
                  //animacion para movimiento del tanque
                 translateT.setByX(-50);
                 translateT.setCycleCount(1);
@@ -331,51 +356,66 @@ import javafx.animation.Timeline;
                 return 1;
             }
             return 0;
-
-            //myTank.setX(myTank.getX() -10);
-            //rect1.setX(rect1.getX() - 10);
         }
-        public void rotateRight(String usr){
-            ImageView myTank = tanks.get(usr);
+        
+        public int rotateRight(String usr){
+            System.out.println("Rot Right: " + usr);
+            
+            tanque tank = users.get(usr);
+            
+            if(tank.username.equals(usr)){
+                System.out.println("DIR: " + tank.dir);
+                tank.dir += 1;
+                resetPosition(tank);
 
-            dir+=1;
-            resetPosition();
-
-            //rotacion con animacion
-            RotateTransition rotacion = new RotateTransition();
-            rotacion.setDuration(Duration.millis(1000));
-            //rotacion.setNode(rect1);
-            rotacion.setNode(myTank);
-            rotacion.setByAngle(90.0);
-            rotacion.setCycleCount(1);
-            rotacion.setAutoReverse(false);
-            rotacion.play();
+                //rotacion con animacion
+                RotateTransition rotacion = new RotateTransition();
+                rotacion.setDuration(Duration.millis(1000));
+                //rotacion.setNode(rect1);
+                rotacion.setNode(tank.myTank);
+                rotacion.setByAngle(90.0);
+                rotacion.setCycleCount(1);
+                rotacion.setAutoReverse(false);
+                rotacion.play();
+                
+                return 1;
+            }
+            return 0;
         }
-        public void rotateLeft(String usr){
-            ImageView myTank = tanks.get(usr);
+        
+        public int rotateLeft(String usr){
+            System.out.println("Rot Left: " + usr);
+            
+            tanque tank = users.get(usr);
+            
+            if(tank.username.equals(usr)){
+                System.out.println("DIR: " + tank.dir);
+                tank.dir -= 1;
+                resetPosition(tank);
 
-            dir-=1;
-            resetPosition();
-
-            //rotacion con animacion
-            RotateTransition rotacion = new RotateTransition();
-            rotacion.setDuration(Duration.millis(1000));
-            rotacion.setNode(rect1);
-            rotacion.setNode(myTank);
-            rotacion.setByAngle(-90.0);
-            rotacion.setCycleCount(1);
-            rotacion.setAutoReverse(false);
-            rotacion.play();
+                //rotacion con animacion
+                RotateTransition rotacion = new RotateTransition();
+                rotacion.setDuration(Duration.millis(1000));
+                //rotacion.setNode(rect1);
+                rotacion.setNode(tank.myTank);
+                rotacion.setByAngle(-90.0);
+                rotacion.setCycleCount(1);
+                rotacion.setAutoReverse(false);
+                rotacion.play();
+                
+                return 1;
+            }
+            return 0;
         }
 
-        public void shot(){
+        public void shot(String usr){
+            tanque tank = users.get(usr);
+            
             TranslateTransition tt = new TranslateTransition(Duration.millis(1000),rect1);
             
-            switch(dir)
+            switch(tank.dir)
             {
                 case 0:
-                        
-                        
                         tt.setByX(100f);
                         tt.setCycleCount(1);
                         tt.setAutoReverse(true);
@@ -421,11 +461,11 @@ import javafx.animation.Timeline;
             }
         }
 
-        void resetPosition()
+        void resetPosition(tanque tank)
         {
-            if(dir == 4 || dir == -4 )
+            if(tank.dir == 4 || tank.dir == -4 )
             {
-                dir = 0;
+                tank.dir = 0;
             }
         }
 
