@@ -13,11 +13,12 @@ import javafx.animation.Timeline;
     import javafx.stage.Stage;
     import javafx.scene.Scene;
     import javafx.application.Platform;
+import javafx.scene.layout.Pane;
 
     class tanque{
         String username;
-        int X;
-        int Y;
+        float X;
+        float Y;
         boolean activo;
         ImageView myTank;
         int dir;
@@ -48,12 +49,20 @@ import javafx.animation.Timeline;
         public void initialize() {
             imageviewTanks = new ImageView[]{tank, tank2, tank3, tank4};
             Platform.runLater(()-> {
+                tanque tank = users.get(this.username);
                 primaryStage = (Stage) rect1.getScene().getWindow();
                 Scene scene = primaryStage.getScene();
+                
+                rect1.setLayoutX(tank.X + (130/2) - 6);
+                rect1.setLayoutY(tank.Y + (65/2) - 6);
+                System.out.println(tank.myTank.localToScreen(tank.myTank.getBoundsInLocal()));
+                System.out.println(rect1.localToScreen(rect1.getBoundsInLocal()));
                 width = scene.getWidth();
                 height = scene.getHeight();
                 System.out.println("Ancho de la escena: " + width);
                 System.out.println("Alto de la escena: " + height);
+                obtenerPositionX();
+                obtenerPositionY();
             });
         }
 
@@ -270,6 +279,10 @@ import javafx.animation.Timeline;
                 translateR.setCycleCount(1);
                 translateR.setAutoReverse(true);
                 translateR.play();
+                
+                tank.Y -= 50;
+                
+                System.out.println(tank.Y);
                 return 1;
             }
             return 0;
@@ -298,6 +311,10 @@ import javafx.animation.Timeline;
                 translateR.setCycleCount(1);
                 translateR.setAutoReverse(true);
                 translateR.play();
+                
+                tank.Y += 50;
+                System.out.println(tank.Y);
+                
                 return 1;
             }
             return 0;
@@ -325,6 +342,10 @@ import javafx.animation.Timeline;
                 translateR.setCycleCount(1);
                 translateR.setAutoReverse(true);
                 translateR.play();
+                
+                tank.X += 50;
+                System.out.println(tank.X);
+                
                 return 1;
             }
             return 0;
@@ -353,6 +374,10 @@ import javafx.animation.Timeline;
                 translateR.setCycleCount(1);
                 translateR.setAutoReverse(true);
                 translateR.play();
+                
+                tank.X -= 50;
+                System.out.println(tank.X);
+                
                 return 1;
             }
             return 0;
@@ -409,35 +434,50 @@ import javafx.animation.Timeline;
         }
 
         public void shot(String usr){
+            ImageView bulletImageView = new ImageView("/img/bullet.png");
+            bulletImageView.setFitWidth(20);
+            bulletImageView.setFitHeight(20);
+            
             tanque tank = users.get(usr);
             
-            TranslateTransition tt = new TranslateTransition(Duration.millis(1000),rect1);
+            bulletImageView.setLayoutX(tank.X + (130/2) - 6);
+            bulletImageView.setLayoutY(tank.Y + (65/2) - 6);
+            
+            Scene scene = tank.myTank.getScene();
+
+            // Añadir el proyectil a la raíz de la escena
+            Pane root = (Pane) scene.getRoot();
+            root.getChildren().add(bulletImageView);
+            
+            TranslateTransition tt = new TranslateTransition(Duration.millis(1000),bulletImageView);
             
             switch(tank.dir)
             {
                 case 0:
-                        tt.setByX(100f);
+                    while(bulletImageView.getLayoutX() < width){
+                        tt.setByX(100);
+                        tt.setCycleCount(1);
+                        tt.setAutoReverse(true);
+                        tt.play();
+                    }
+                    break;
+                case 1:
+                        tt.setByY(100f);
                         tt.setCycleCount(1);
                         tt.setAutoReverse(true);
                         tt.play();
                     break;
-                case 1:
-                    tt.setByY(100f);
-                    tt.setCycleCount(1);
-                    tt.setAutoReverse(true);
-                    tt.play();
-                    break;
                 case 2:
-                    tt.setByX(-100f);
-                    tt.setCycleCount(1);
-                    tt.setAutoReverse(true);
-                    tt.play();
+                        tt.setByX(-100f);
+                        tt.setCycleCount(1);
+                        tt.setAutoReverse(true);
+                        tt.play();
                     break;
                 case 3:
-                     tt.setByY(-100f);
-                    tt.setCycleCount(1);
-                    tt.setAutoReverse(true);
-                    tt.play();
+                       tt.setByY(-100f);
+                       tt.setCycleCount(1);
+                       tt.setAutoReverse(true);
+                       tt.play();
                     break;
                 case -1:
                     tt.setByY(-100f);
@@ -471,9 +511,11 @@ import javafx.animation.Timeline;
 
         void obtenerPositionX()
         {
+            tanque tank = users.get(this.username);
             Timeline timeline = new Timeline(
                new KeyFrame(Duration.seconds(1), event -> {
                    double x = rect1.getLayoutX();
+                   System.out.println("X desde clase: " + tank.X);
                    x += rect1.getTranslateX();
                    System.out.println("X: " + x);
                })
@@ -486,9 +528,11 @@ import javafx.animation.Timeline;
 
         void obtenerPositionY()
         {
+            tanque tank = users.get(this.username);
             Timeline timeline = new Timeline(
                new KeyFrame(Duration.seconds(1), event -> {
-                   double x = rect1.getLayoutY();
+                   double x = tank.myTank.getLayoutY();
+                   System.out.println("Y desde clase: " + tank.Y);
                    x += rect1.getTranslateY();
                    System.out.println("Y: " + x);
                })

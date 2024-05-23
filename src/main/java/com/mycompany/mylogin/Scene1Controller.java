@@ -27,7 +27,7 @@ public class Scene1Controller {
     private Cliente cliente;
     private long lastRotationTime = System.currentTimeMillis() - 1000; // Initialize to allow immediate rotation
 
-    public void login(ActionEvent e) {
+    public void login(ActionEvent e) throws IOException{
         try {
             cliente = new Cliente();
             String username = nameTextField.getText();
@@ -38,7 +38,9 @@ public class Scene1Controller {
 
             stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             
-            Online(stage);
+            //Online(stage);
+            
+            moveTank(stage);
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -49,7 +51,7 @@ public class Scene1Controller {
         String respuesta = "A";
         
             if (!Cliente.password.isEmpty() && !Cliente.username.isEmpty()) {
-            respuesta = Cliente.initializeClient();
+                respuesta = Cliente.initializeClient();
             if (!respuesta.equals("exito")) {
                 Cliente.password = "";
                 Cliente.username = "";
@@ -71,7 +73,7 @@ public class Scene1Controller {
 
         Cliente.scene2 = scene2Controller;
         
-        //Cliente.scene2.setUser("Test", "-50", "500");
+        Cliente.scene2.setUser("Test", "-50", "500");
 
         scene = new Scene(root);
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
