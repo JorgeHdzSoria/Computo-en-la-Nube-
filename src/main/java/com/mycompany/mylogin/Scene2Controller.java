@@ -2,9 +2,9 @@
 
     import java.io.IOException;
     import java.util.LinkedHashMap;
-import javafx.animation.KeyFrame;
+    import javafx.animation.KeyFrame;
     import javafx.animation.RotateTransition;
-import javafx.animation.Timeline;
+    import javafx.animation.Timeline;
     import javafx.fxml.FXML;
     import javafx.scene.image.ImageView;
     import javafx.scene.shape.Rectangle;
@@ -13,7 +13,7 @@ import javafx.animation.Timeline;
     import javafx.stage.Stage;
     import javafx.scene.Scene;
     import javafx.application.Platform;
-import javafx.scene.layout.Pane;
+    import javafx.scene.layout.Pane;
 
     class tanque{
         String username;
@@ -43,7 +43,12 @@ import javafx.scene.layout.Pane;
         static LinkedHashMap<String, ImageView> tanks = new LinkedHashMap<>();
         double width;
         double height;
+        double xs;
+        double ys;
+        double moveX;
+        double moveY;
         Stage primaryStage;
+        Timeline timeline;
 
         @FXML
         public void initialize() {
@@ -61,8 +66,6 @@ import javafx.scene.layout.Pane;
                 height = scene.getHeight();
                 System.out.println("Ancho de la escena: " + width);
                 System.out.println("Alto de la escena: " + height);
-                obtenerPositionX();
-                obtenerPositionY();
             });
         }
 
@@ -439,66 +442,46 @@ import javafx.scene.layout.Pane;
             bulletImageView.setFitHeight(20);
             
             tanque tank = users.get(usr);
-            
-            bulletImageView.setLayoutX(tank.X + (130/2) - 6);
+  
+            bulletImageView.setLayoutX(tank.X + (130/2) - 6);            
             bulletImageView.setLayoutY(tank.Y + (65/2) - 6);
-            
             Scene scene = tank.myTank.getScene();
 
             // Añadir el proyectil a la raíz de la escena
             Pane root = (Pane) scene.getRoot();
             root.getChildren().add(bulletImageView);
-            
-            TranslateTransition tt = new TranslateTransition(Duration.millis(1000),bulletImageView);
-            
+                        
             switch(tank.dir)
             {
                 case 0:
-                    while(bulletImageView.getLayoutX() < width){
-                        tt.setByX(100);
-                        tt.setCycleCount(1);
-                        tt.setAutoReverse(true);
-                        tt.play();
-                    }
+                    moveX = 10;    
                     break;
                 case 1:
-                        tt.setByY(100f);
-                        tt.setCycleCount(1);
-                        tt.setAutoReverse(true);
-                        tt.play();
-                    break;
+                case -3:
+                    moveY = 10;
+                    break;        
                 case 2:
-                        tt.setByX(-100f);
-                        tt.setCycleCount(1);
-                        tt.setAutoReverse(true);
-                        tt.play();
+                case -2:
+                    moveX = -10;
                     break;
                 case 3:
-                       tt.setByY(-100f);
-                       tt.setCycleCount(1);
-                       tt.setAutoReverse(true);
-                       tt.play();
-                    break;
                 case -1:
-                    tt.setByY(-100f);
-                    tt.setCycleCount(1);
-                    tt.setAutoReverse(true);
-                    tt.play();
+                    moveY = -10;
                     break;
-                case -2:
-                     tt.setByX(-100f);
-                    tt.setCycleCount(1);
-                    tt.setAutoReverse(true);
-                    tt.play();
-                    break;
-                case -3:
-                    tt.setByY(100f);
-                    tt.setCycleCount(1);
-                    tt.setAutoReverse(true);
-                    tt.play();
-                    break;
-
             }
+            timeline = new Timeline(new KeyFrame(Duration.seconds(.05), event -> {
+                    bulletImageView.setLayoutX(bulletImageView.getLayoutX() + moveX);
+                    System.out.println("coordenada del disparo: " + bulletImageView.getLayoutX());
+                    //bulletImageView.setLayoutY(bulletImageView.getLayoutY() + moveY);
+                    // Verificar si el proyectil ha tocado el borde de la escena
+                    if (bulletImageView.getLayoutX() <= 0 || bulletImageView.getLayoutX() >= width ||
+                        bulletImageView.getLayoutY() <= 0 || bulletImageView.getLayoutY() >= height) {
+                        root.getChildren().remove(bulletImageView);
+                        timeline.stop();
+                    }
+                    }));
+                    timeline.setCycleCount(Timeline.INDEFINITE);
+                    timeline.play();
         }
 
         void resetPosition(tanque tank)
@@ -507,38 +490,5 @@ import javafx.scene.layout.Pane;
             {
                 tank.dir = 0;
             }
-        }
-
-        void obtenerPositionX()
-        {
-            tanque tank = users.get(this.username);
-            Timeline timeline = new Timeline(
-               new KeyFrame(Duration.seconds(1), event -> {
-                   double x = rect1.getLayoutX();
-                   System.out.println("X desde clase: " + tank.X);
-                   x += rect1.getTranslateX();
-                   System.out.println("X: " + x);
-               })
-            );
-            timeline.setCycleCount(Timeline.INDEFINITE);
-            // Iniciar el Timeline
-            timeline.play();
-            
-        }
-
-        void obtenerPositionY()
-        {
-            tanque tank = users.get(this.username);
-            Timeline timeline = new Timeline(
-               new KeyFrame(Duration.seconds(1), event -> {
-                   double x = tank.myTank.getLayoutY();
-                   System.out.println("Y desde clase: " + tank.Y);
-                   x += rect1.getTranslateY();
-                   System.out.println("Y: " + x);
-               })
-            );
-            timeline.setCycleCount(Timeline.INDEFINITE);
-            // Iniciar el Timeline
-            timeline.play();
         }
     }
