@@ -39,6 +39,7 @@
         String username = "";
 
         public static ImageView[] imageviewTanks;
+        public static ImageView[] bullets;
         static LinkedHashMap<String, tanque> users = new LinkedHashMap<>();
         static LinkedHashMap<String, ImageView> tanks = new LinkedHashMap<>();
         double width;
@@ -477,7 +478,7 @@
                     if (bulletImageView.getLayoutX() <= 0 || bulletImageView.getLayoutX() >= width ||
                         bulletImageView.getLayoutY() <= 0 || bulletImageView.getLayoutY() >= height) {
                         root.getChildren().remove(bulletImageView);
-                        timeline.stop();
+                        //timeline.stop();
                     }
                     }));
                     timeline.setCycleCount(Timeline.INDEFINITE);
