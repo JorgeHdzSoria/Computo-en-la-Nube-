@@ -58,7 +58,7 @@ public class Scene1Controller {
             }else if(respuesta.equals("exito")){
                 Cliente.sesion = true;
                 Cliente.initializeChat(Cliente.dis, Cliente.dos);
-                Cliente.sendMessage("JUG@RYA");
+                
                 this.moveTank(stage);
             }
         }  
@@ -72,6 +72,8 @@ public class Scene1Controller {
         Scene2Controller scene2Controller = loader.getController();
 
         Cliente.scene2 = scene2Controller;
+        
+        //Cliente.sendMessage("JUG@RYA");
         
         Cliente.scene2.setUser("Test", "-50", "500");
 
@@ -124,7 +126,13 @@ public class Scene1Controller {
                         }
                         break;
                     case SPACE:
-                        scene2Controller.shot(scene2Controller.username);
+                        now = System.currentTimeMillis();
+                        if (now - lastRotationTime >= 1000) {
+                            scene2Controller.shot(scene2Controller.username);
+                            if(Cliente.sesion == true){
+                                Cliente.sendMessage("SHOT");
+                            }
+                        }
                         break;
                     case ESCAPE:
                         System.out.println("Cerrando la aplicación...");

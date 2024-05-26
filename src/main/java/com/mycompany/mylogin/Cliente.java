@@ -68,7 +68,7 @@ class Listener extends Thread {
                 Cliente.scene2.newUser(this.mensajes.get(0), this.mensajes.get(1));
                 Cliente.scene2.setPositions();
             }
-            if (msg.contains("UP") || msg.contains("DOWN") || msg.contains("RIGHT") || msg.contains("LEFT")){
+            if (msg.contains("UP") || msg.contains("DOWN") || msg.contains("RIGHT") || msg.contains("LEFT") || msg.contains("SHOT")){
                 //|| msg.contains("ROT_RIGHT") || msg.contains("ROT_LEFT")) {
                 Cliente.scene2.moveUser(msg);
             }
@@ -86,7 +86,7 @@ class Listener extends Thread {
             if (msg.contains("JUG@RYA")) {
                 Cliente.scene2.newUser(this.mensajes.get(0), this.mensajes.get(1));
             }
-            if (msg.contains("UP") || msg.contains("DOWN") || msg.contains("RIGHT") || msg.contains("LEFT")) {
+            if (msg.contains("UP") || msg.contains("DOWN") || msg.contains("RIGHT") || msg.contains("LEFT") || msg.contains("SHOT")) {
                 Cliente.scene2.moveUser(msg);
             }
             if (msg.contains("USER PROPIO")) {
@@ -115,7 +115,7 @@ public class Cliente extends Thread {
     
     static public String initializeClient(){
         try {
-            InetAddress ip = InetAddress.getByName("192.168.1.11"); // 10.103.160.205 -> Servidor en la nube
+            InetAddress ip = InetAddress.getByName("192.168.1.7"); // 10.103.160.205 -> Servidor en la nube
             socket = new Socket(ip, 2555);
             
             dis = new DataInputStream(socket.getInputStream());

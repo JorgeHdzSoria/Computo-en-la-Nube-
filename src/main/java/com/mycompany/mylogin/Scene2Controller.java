@@ -14,6 +14,7 @@
     import javafx.scene.Scene;
     import javafx.application.Platform;
     import javafx.scene.layout.Pane;
+    import java.util.ArrayList;
 
     class tanque{
         String username;
@@ -39,7 +40,7 @@
         String username = "";
 
         public static ImageView[] imageviewTanks;
-        public static ImageView[] bullets;
+        private ArrayList<ImageView> bullets = new ArrayList<>();
         static LinkedHashMap<String, tanque> users = new LinkedHashMap<>();
         static LinkedHashMap<String, ImageView> tanks = new LinkedHashMap<>();
         double width;
@@ -59,10 +60,10 @@
                 primaryStage = (Stage) rect1.getScene().getWindow();
                 Scene scene = primaryStage.getScene();
                 
-                rect1.setLayoutX(tank.X + (130/2) - 6);
-                rect1.setLayoutY(tank.Y + (65/2) - 6);
-                System.out.println(tank.myTank.localToScreen(tank.myTank.getBoundsInLocal()));
-                System.out.println(rect1.localToScreen(rect1.getBoundsInLocal()));
+                //rect1.setLayoutX(tank.X + (130/2) - 6);
+                //rect1.setLayoutY(tank.Y + (65/2) - 6);
+                //System.out.println(tank.myTank.localToScreen(tank.myTank.getBoundsInLocal()));
+                //System.out.println(rect1.localToScreen(rect1.getBoundsInLocal()));
                 width = scene.getWidth();
                 height = scene.getHeight();
                 System.out.println("Ancho de la escena: " + width);
@@ -125,6 +126,9 @@
                 }
                 if(move.equals("ROT_LEFT")){
                     this.rotateLeft(username);
+                }
+                if(move.equals("SHOT")){
+                    this.shot(username);
                 }
             }
         }
@@ -437,54 +441,76 @@
             return 0;
         }
 
-        public void shot(String usr){
+        public void shot(String usr) {
             ImageView bulletImageView = new ImageView("/img/bullet.png");
             bulletImageView.setFitWidth(20);
             bulletImageView.setFitHeight(20);
-            
+
             tanque tank = users.get(usr);
-  
-            bulletImageView.setLayoutX(tank.X + (130/2) - 6);            
-            bulletImageView.setLayoutY(tank.Y + (65/2) - 6);
+
+            bulletImageView.setLayoutX(tank.X + (130 / 2) - 6);
+            bulletImageView.setLayoutY(tank.Y + (65 / 2) - 6);
             Scene scene = tank.myTank.getScene();
 
-            // Añadir el proyectil a la raíz de la escena
+
             Pane root = (Pane) scene.getRoot();
-            root.getChildren().add(bulletImageView);
-                        
-            switch(tank.dir)
-            {
+            Platform.runLater(() -> root.getChildren().add(bulletImageView));
+
+            bullets.add(bulletImageView);
+
+            final int[] move = {0, 0};
+
+            switch (tank.dir) {
                 case 0:
-                    moveX = 10;    
+                    move[0] = 10;
                     break;
                 case 1:
                 case -3:
-                    moveY = 10;
-                    break;        
+                    move[1] = 10;
+                    break;
                 case 2:
                 case -2:
-                    moveX = -10;
+                    move[0] = -10;
                     break;
                 case 3:
                 case -1:
-                    moveY = -10;
+                    move[1] = -10;
                     break;
             }
-            timeline = new Timeline(new KeyFrame(Duration.seconds(.05), event -> {
-                    bulletImageView.setLayoutX(bulletImageView.getLayoutX() + moveX);
-                    System.out.println("coordenada del disparo: " + bulletImageView.getLayoutX());
-                    //bulletImageView.setLayoutY(bulletImageView.getLayoutY() + moveY);
-                    // Verificar si el proyectil ha tocado el borde de la escena
-                    if (bulletImageView.getLayoutX() <= 0 || bulletImageView.getLayoutX() >= width ||
-                        bulletImageView.getLayoutY() <= 0 || bulletImageView.getLayoutY() >= height) {
-                        root.getChildren().remove(bulletImageView);
-                        //timeline.stop();
-                    }
-                    }));
-                    timeline.setCycleCount(Timeline.INDEFINITE);
-                    timeline.play();
-        }
 
+            final Timeline[] timeline = new Timeline[1];
+
+            timeline[0] = new Timeline(new KeyFrame(Duration.seconds(.05), event -> {
+                Platform.runLater(() -> {
+                    bulletImageView.setLayoutX(bulletImageView.getLayoutX() + move[0]);
+                    bulletImageView.setLayoutY(bulletImageView.getLayoutY() + move[1]);
+                    //System.out.println("coordenada del disparo: " + bulletImageView.getLayoutX());
+
+                    for (tanque otherTank : users.values()) {
+                        if (otherTank != tank && bulletImageView.getBoundsInParent().intersects(otherTank.myTank.getBoundsInParent())) {
+                            System.out.println("Colisión con el tanque de usuario: " + otherTank.username);
+                            root.getChildren().remove(bulletImageView);
+                            bullets.remove(bulletImageView);
+                            root.getChildren().remove(otherTank.myTank);
+                            users.remove(otherTank.username);
+                            timeline[0].stop();
+                            return;
+                        }
+                    }
+
+                    if (bulletImageView.getLayoutX() <= 0 || bulletImageView.getLayoutX() >= scene.getWidth() ||
+                        bulletImageView.getLayoutY() <= 0 || bulletImageView.getLayoutY() >= scene.getHeight()) {
+                        root.getChildren().remove(bulletImageView);
+                        bullets.remove(bulletImageView); 
+                        timeline[0].stop();
+                    }
+                });
+            }));
+
+            timeline[0].setCycleCount(Timeline.INDEFINITE);
+            timeline[0].play();
+        }
+        
         void resetPosition(tanque tank)
         {
             if(tank.dir == 4 || tank.dir == -4 )
