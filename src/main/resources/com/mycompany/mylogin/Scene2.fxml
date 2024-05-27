@@ -22,7 +22,7 @@
             <Image url="@../../../img/tank2.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="tank4" fitHeight="65.0" fitWidth="170.0" layoutX="600.0" layoutY="500.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true" rotate="180.0" visible="false">
+      <ImageView fx:id="tank4" fitHeight="65.0" fitWidth="170.0" layoutX="600.0" layoutY="500.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true" visible="false">
          <image>
             <Image url="@../../../img/tank3.png" />
          </image>

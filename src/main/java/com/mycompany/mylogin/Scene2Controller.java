@@ -148,7 +148,7 @@
             System.out.println(posY);
             
             tanque temTank = new tanque();
-            temTank.X = Integer.parseInt(posX);
+            temTank.X = Integer.parseInt(posX) + 60;
             temTank.Y = Integer.parseInt(posY);
             temTank.username = username;
             temTank.activo = true;
@@ -171,7 +171,7 @@
             System.out.println("USERNAME: " + name);
             System.out.println("X: " + X);
             System.out.println("Y: " + Y);
-            tank.X = Integer.parseInt(X);
+            tank.X = Integer.parseInt(X) + 60;
             tank.Y = Integer.parseInt(Y);
             tank.username = name;
             tank.activo = true;
@@ -217,7 +217,7 @@
                 first = texto.substring(position + 1, position2);
                 System.out.println(first);
 
-                temTank.X = Integer.parseInt(first);
+                temTank.X = Integer.parseInt(first) + 60;
 
                 texto = texto.substring(position2+1,texto.length());
 

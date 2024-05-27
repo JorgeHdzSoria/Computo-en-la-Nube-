@@ -25,7 +25,14 @@ public class Scene1Controller {
     private Scene scene;
     private Parent root;
     private Cliente cliente;
-    private long lastRotationTime = System.currentTimeMillis() - 1000; // Initialize to allow immediate rotation
+    private long lastRotationTime = System.currentTimeMillis() - 1000;
+    private long lastShotTime = System.currentTimeMillis() - 1000;
+    private long lastRightMove = System.currentTimeMillis() - 1000;
+    private long lastLeftMove = System.currentTimeMillis() - 1000;
+    private long lastUpMove = System.currentTimeMillis() - 1000;
+    private long lastDownMove = System.currentTimeMillis() - 1000;
+    private long lastMove = System.currentTimeMillis() - 1000;
+    
 
     public void login(ActionEvent e) throws IOException{
         try {
@@ -38,9 +45,9 @@ public class Scene1Controller {
 
             stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             
-            //Online(stage);
+            Online(stage);
             
-            moveTank(stage);
+            //moveTank(stage);
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -73,9 +80,9 @@ public class Scene1Controller {
 
         Cliente.scene2 = scene2Controller;
         
-        //Cliente.sendMessage("JUG@RYA");
+        Cliente.sendMessage("JUG@RYA");
         
-        Cliente.scene2.setUser("Test", "-50", "500");
+        //Cliente.scene2.setUser("Test", "-50", "500");
 
         scene = new Scene(root);
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -83,33 +90,49 @@ public class Scene1Controller {
             public void handle(KeyEvent ee) {
                 switch (ee.getCode()) {
                     case W:
-                        int res = scene2Controller.moveUp(scene2Controller.username);
-                        if(res == 1 && Cliente.sesion == true){
-                            Cliente.sendMessage("UP");
+                        long nowMove = System.currentTimeMillis();
+                        if (nowMove - lastMove >= 1000) {
+                            int res = scene2Controller.moveUp(scene2Controller.username);
+                            if(res == 1 && Cliente.sesion == true){
+                                Cliente.sendMessage("UP");
+                            }
+                            lastMove = nowMove;
                         }
                         break;
                     case S:
-                        res = scene2Controller.moveDown(scene2Controller.username);
-                        if(res == 1 && Cliente.sesion == true){
-                            Cliente.sendMessage("DOWN");
+                        nowMove = System.currentTimeMillis();
+                        if (nowMove - lastMove >= 1000) {
+                            int res = scene2Controller.moveDown(scene2Controller.username);
+                            if(res == 1 && Cliente.sesion == true){
+                                Cliente.sendMessage("DOWN");
+                            }
+                            lastMove = nowMove;
                         }
                         break;
                     case D:
-                        res = scene2Controller.moveRight(scene2Controller.username);
-                        if(res == 1 && Cliente.sesion == true){
-                            Cliente.sendMessage("RIGHT");
+                        nowMove = System.currentTimeMillis();
+                        if (nowMove - lastMove >= 1000) {
+                            int res = scene2Controller.moveRight(scene2Controller.username);
+                            if(res == 1 && Cliente.sesion == true){
+                                Cliente.sendMessage("RIGHT");
+                            }
+                            lastMove = nowMove;
                         }
                         break;
                     case A:
-                        res = scene2Controller.moveLeft(scene2Controller.username);
-                        if(res == 1 && Cliente.sesion == true){
-                            Cliente.sendMessage("LEFT");
+                        nowMove = System.currentTimeMillis();
+                        if (nowMove - lastMove >= 1000) {
+                            int res = scene2Controller.moveLeft(scene2Controller.username);
+                            if(res == 1 && Cliente.sesion == true){
+                                Cliente.sendMessage("LEFT");
+                            }
+                            lastMove = nowMove;
                         }
                         break;
                     case RIGHT:
                         long now = System.currentTimeMillis();
                         if (now - lastRotationTime >= 1000) {
-                            res = scene2Controller.rotateRight(scene2Controller.username);
+                            int res = scene2Controller.rotateRight(scene2Controller.username);
                             if(res == 1 && Cliente.sesion == true){
                                 Cliente.sendMessage("ROT_RIGHT");
                             }
@@ -118,7 +141,7 @@ public class Scene1Controller {
                     case LEFT:
                         now = System.currentTimeMillis();
                         if (now - lastRotationTime >= 1000) {
-                            res = scene2Controller.rotateLeft(scene2Controller.username);
+                            int res = scene2Controller.rotateLeft(scene2Controller.username);
                             if(res == 1 && Cliente.sesion == true){
                                 Cliente.sendMessage("ROT_LEFT");
                             }
@@ -127,11 +150,12 @@ public class Scene1Controller {
                         break;
                     case SPACE:
                         now = System.currentTimeMillis();
-                        if (now - lastRotationTime >= 1000) {
+                        if (now - lastShotTime >= 1000) {
                             scene2Controller.shot(scene2Controller.username);
                             if(Cliente.sesion == true){
                                 Cliente.sendMessage("SHOT");
                             }
+                            lastShotTime = now;
                         }
                         break;
                     case ESCAPE:
