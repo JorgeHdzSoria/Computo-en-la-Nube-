@@ -31,7 +31,7 @@ public class Scene1Controller {
     private long lastLeftMove = System.currentTimeMillis() - 1000;
     private long lastUpMove = System.currentTimeMillis() - 1000;
     private long lastDownMove = System.currentTimeMillis() - 1000;
-    private long lastMove = System.currentTimeMillis() - 1000;
+    private long lastMove = System.currentTimeMillis() - 600;
     
 
     public void login(ActionEvent e) throws IOException{
@@ -91,7 +91,7 @@ public class Scene1Controller {
                 switch (ee.getCode()) {
                     case W:
                         long nowMove = System.currentTimeMillis();
-                        if (nowMove - lastMove >= 1000) {
+                        if (nowMove - lastMove >= 600) {
                             int res = scene2Controller.moveUp(scene2Controller.username);
                             if(res == 1 && Cliente.sesion == true){
                                 Cliente.sendMessage("UP");
@@ -101,7 +101,7 @@ public class Scene1Controller {
                         break;
                     case S:
                         nowMove = System.currentTimeMillis();
-                        if (nowMove - lastMove >= 1000) {
+                        if (nowMove - lastMove >= 600) {
                             int res = scene2Controller.moveDown(scene2Controller.username);
                             if(res == 1 && Cliente.sesion == true){
                                 Cliente.sendMessage("DOWN");
@@ -111,7 +111,7 @@ public class Scene1Controller {
                         break;
                     case D:
                         nowMove = System.currentTimeMillis();
-                        if (nowMove - lastMove >= 1000) {
+                        if (nowMove - lastMove >= 600) {
                             int res = scene2Controller.moveRight(scene2Controller.username);
                             if(res == 1 && Cliente.sesion == true){
                                 Cliente.sendMessage("RIGHT");
@@ -121,7 +121,7 @@ public class Scene1Controller {
                         break;
                     case A:
                         nowMove = System.currentTimeMillis();
-                        if (nowMove - lastMove >= 1000) {
+                        if (nowMove - lastMove >= 600) {
                             int res = scene2Controller.moveLeft(scene2Controller.username);
                             if(res == 1 && Cliente.sesion == true){
                                 Cliente.sendMessage("LEFT");

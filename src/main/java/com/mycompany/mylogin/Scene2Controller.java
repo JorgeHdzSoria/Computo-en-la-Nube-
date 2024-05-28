@@ -59,11 +59,7 @@
                 tanque tank = users.get(this.username);
                 primaryStage = (Stage) rect1.getScene().getWindow();
                 Scene scene = primaryStage.getScene();
-                
-                //rect1.setLayoutX(tank.X + (130/2) - 6);
-                //rect1.setLayoutY(tank.Y + (65/2) - 6);
-                //System.out.println(tank.myTank.localToScreen(tank.myTank.getBoundsInLocal()));
-                //System.out.println(rect1.localToScreen(rect1.getBoundsInLocal()));
+
                 width = scene.getWidth();
                 height = scene.getHeight();
                 System.out.println("Ancho de la escena: " + width);
@@ -271,94 +267,95 @@
             System.out.println("Up: " + usr);
 
             tanque tank = users.get(usr);
-            TranslateTransition translateT = new TranslateTransition(Duration.millis(500),tank.myTank);
-            TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
+            
+            if((tank.Y - 70) >= 0){
+                TranslateTransition translateT = new TranslateTransition(Duration.millis(500),tank.myTank);
+                TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
 
-            if(tank.dir == 3 || tank.dir == 1 || tank.dir == -1 || tank.dir == -3)
-            {
-                //animacion para movimiento del tanque                
-                translateT.setByY(-50);
-                translateT.setCycleCount(1);
-                translateT.setAutoReverse(true);
-                translateT.play();
+                if(tank.dir == 3 || tank.dir == 1 || tank.dir == -1 || tank.dir == -3)
+                {
+                    //animacion para movimiento del tanque                
+                    translateT.setByY(-50);
+                    translateT.setCycleCount(1);
+                    translateT.setAutoReverse(true);
+                    translateT.play();
 
-                //animacion para movimiento del disparo
-                translateR.setByY(-50);
-                translateR.setCycleCount(1);
-                translateR.setAutoReverse(true);
-                translateR.play();
-                
-                tank.Y -= 50;
-                
-                System.out.println(tank.Y);
-                return 1;
+                    //animacion para movimiento del disparo
+                    translateR.setByY(-50);
+                    translateR.setCycleCount(1);
+                    translateR.setAutoReverse(true);
+                    translateR.play();
+
+                    tank.Y -= 50;
+
+                    System.out.println(tank.Y);
+                    return 1;
+                }
             }
             return 0;
-
-            //myTank.setY(myTank.getY() -10);
         }
         
         public int moveDown(String usr){
             System.out.println("Down: " + usr);
 
             tanque tank = users.get(usr);
-            TranslateTransition translateT = new TranslateTransition(Duration.millis(500),tank.myTank);
-            TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
+            
+            if((tank.Y + 150) <= height){
+                TranslateTransition translateT = new TranslateTransition(Duration.millis(500),tank.myTank);
+                TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
 
-            if(tank.dir == 1 || tank.dir == 3 || tank.dir == -1 || tank.dir == -3){
-                 //animacion para movimiento del tanque
-                translateT.setByY(50);
-                translateT.setCycleCount(1);
-                translateT.setAutoReverse(true);
-                translateT.play();
-               
+                if(tank.dir == 1 || tank.dir == 3 || tank.dir == -1 || tank.dir == -3){
+                     //animacion para movimiento del tanque
+                    translateT.setByY(50);
+                    translateT.setCycleCount(1);
+                    translateT.setAutoReverse(true);
+                    translateT.play();
 
-                //animacion del movimiento del disparo
-                //rect1.setY(rect1.getY() - 10);
-                translateR.setByY(50f);
-                translateR.setCycleCount(1);
-                translateR.setAutoReverse(true);
-                translateR.play();
-                
-                tank.Y += 50;
-                System.out.println(tank.Y);
-                
-                return 1;
+
+                    //animacion del movimiento del disparo
+                    translateR.setByY(50f);
+                    translateR.setCycleCount(1);
+                    translateR.setAutoReverse(true);
+                    translateR.play();
+
+                    tank.Y += 50;
+                    System.out.println(tank.Y);
+
+                    return 1;
+                }
             }
             return 0;
-            //myTank.setY(myTank.getY() +10);
-            //rect1.setY(rect1.getY() + 10);
         }
         
         public int moveRight(String usr){
             System.out.println("Right: " + usr);
 
             tanque tank = users.get(usr);
-            TranslateTransition translateT = new TranslateTransition(Duration.millis(500),tank.myTank);
-            TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
+            
+            if((tank.X + 150) <= width){
+                TranslateTransition translateT = new TranslateTransition(Duration.millis(500),tank.myTank);
+                TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
 
-            if(tank.dir == 0 || tank.dir == 2 || tank.dir == -2){
-                 //animacion para movimiento del tanque
-                translateT.setByX(50);
-                translateT.setCycleCount(1);
-                translateT.setAutoReverse(true);
-                translateT.play();
+                if(tank.dir == 0 || tank.dir == 2 || tank.dir == -2){
+                     //animacion para movimiento del tanque
+                    translateT.setByX(50);
+                    translateT.setCycleCount(1);
+                    translateT.setAutoReverse(true);
+                    translateT.play();
 
-                //animacion del movimiento del disparo
-                //rect1.setY(rect1.getY() - 10);
-                translateR.setByX(50f);
-                translateR.setCycleCount(1);
-                translateR.setAutoReverse(true);
-                translateR.play();
-                
-                tank.X += 50;
-                System.out.println(tank.X);
-                
-                return 1;
+                    //animacion del movimiento del disparo
+                    translateR.setByX(50f);
+                    translateR.setCycleCount(1);
+                    translateR.setAutoReverse(true);
+                    translateR.play();
+
+                    tank.X += 50;
+                    System.out.println(tank.X);
+
+                    return 1;
+                }
             }
             return 0;
-            //myTank.setX(myTank.getX() +10);
-            //rect1.setX(rect1.getX() + 10);
         }
         
         public int moveLeft(String usr){
@@ -366,27 +363,28 @@
 
             tanque tank = users.get(usr);
             
-            TranslateTransition translateT = new TranslateTransition(Duration.millis(500),tank.myTank);
-            TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
+            if((tank.X - 50) >= 0){
+                TranslateTransition translateT = new TranslateTransition(Duration.millis(500),tank.myTank);
+                TranslateTransition translateR = new TranslateTransition(Duration.millis(500),rect1);
 
-            if(tank.dir == 0 || tank.dir == 2 || tank.dir == -2){
-                 //animacion para movimiento del tanque
-                translateT.setByX(-50);
-                translateT.setCycleCount(1);
-                translateT.setAutoReverse(true);
-                translateT.play();
+                if(tank.dir == 0 || tank.dir == 2 || tank.dir == -2){
+                     //animacion para movimiento del tanque
+                    translateT.setByX(-50);
+                    translateT.setCycleCount(1);
+                    translateT.setAutoReverse(true);
+                    translateT.play();
 
-                //animacion del movimiento del disparo
-                //rect1.setY(rect1.getY() - 10);
-                translateR.setByX(-50f);
-                translateR.setCycleCount(1);
-                translateR.setAutoReverse(true);
-                translateR.play();
-                
-                tank.X -= 50;
-                System.out.println(tank.X);
-                
-                return 1;
+                    //animacion del movimiento del disparo
+                    translateR.setByX(-50f);
+                    translateR.setCycleCount(1);
+                    translateR.setAutoReverse(true);
+                    translateR.play();
+
+                    tank.X -= 50;
+                    System.out.println(tank.X);
+
+                    return 1;
+                }
             }
             return 0;
         }
@@ -429,7 +427,6 @@
                 //rotacion con animacion
                 RotateTransition rotacion = new RotateTransition();
                 rotacion.setDuration(Duration.millis(1000));
-                //rotacion.setNode(rect1);
                 rotacion.setNode(tank.myTank);
                 rotacion.setByAngle(-90.0);
                 rotacion.setCycleCount(1);
